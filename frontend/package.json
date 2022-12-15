@@ -1,0 +1,48 @@
+{
+  "name": "seal-rescue",
+  "version": "1.0.0",
+  "description": "3D Runner Game",
+  "scripts": {
+    "dev": "webpack --mode development --config webpack.config.base.js",
+    "build": "webpack --mode production --config webpack.config.prod.js",
+    "start": "webpack serve --mode development --config webpack.config.base.js"
+  },
+  "author": "Kimberley Blomme, Alicia Boltryk, Omar Jetti, Antoine Putmans, Guilherme Yamamoto",
+  "license": "CC-BY-SA-4.0",
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "autoprefixer": "^10.4.13",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.2.6",
+    "eslint": "^8.19.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-webpack-plugin": "^3.2.0",
+    "html-loader": "^2.1.2",
+    "html-webpack-plugin": "^5.3.1",
+    "postcss": "^8.4.19",
+    "postcss-loader": "^7.0.1",
+    "prettier-airbnb-config": "^1.0.0",
+    "style-loader": "^2.0.0",
+    "tailwindcss": "^3.2.4",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^5.32.0",
+    "@babylonjs/gui": "^5.32.0",
+    "@babylonjs/inspector": "^5.32.0",
+    "@babylonjs/loaders": "^5.32.0",
+    "@babylonjs/materials": "^5.32.0",
+    "@babylonjs/post-processes": "^5.32.0",
+    "@babylonjs/procedural-textures": "^5.32.0",
+    "@babylonjs/serializers": "^5.32.0",
+    "@lottiefiles/lottie-player": "^1.6.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "lottie-web-webpack-loader": "^0.0.5",
+    "terser-webpack-plugin": "^5.3.6",
+    "webpack-merge": "^5.8.0"
+  }
+}
