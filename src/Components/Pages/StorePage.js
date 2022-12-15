@@ -18,7 +18,7 @@ import rightArrow from '../../assets/img/right_arrow.png';
 import sealAsset from '../../assets/3Dmodels/seal_animated.glb';
 import pandaImport from '../../assets/texture/Seal_ColorMap_Panda.png';
 import tigerImport from '../../assets/texture/Seal_ColorMap_Tiger.png';
-import baseImport from '../../assets/texture/Seal_ColorMap_Base.png'
+import baseImport from '../../assets/texture/Seal_ColorMap_Base.png';
 import guiButtonsStore from '../../assets/guiStoreButtons.json';
 
 // TODO get current user texture
@@ -42,26 +42,24 @@ const createScene = async () => {
   const engine = new BABYLON.Engine(newCanvas, true);
   const newScene = new BABYLON.Scene(engine);
 
+  let currentTexture = 'seal';
+  const tigerSkin = new Texture(tigerImport, newScene);
+  const pandaSkin = new Texture(pandaImport, newScene);
+  const baseSkin = new Texture(baseImport, newScene);
+  tigerSkin.uAng = Math.PI;
+  pandaSkin.uAng = Math.PI;
+  baseSkin.uAng = Math.PI;
 
-let currentTexture = 'seal'
-const tigerSkin = new Texture(tigerImport,newScene)
-const pandaSkin = new Texture(pandaImport,newScene)
-const baseSkin = new Texture(baseImport,newScene)
-tigerSkin.uAng= Math.PI
-pandaSkin.uAng= Math.PI
-baseSkin.uAng= Math.PI
-
-const tiger = new StandardMaterial('tiger',newScene)
-const panda = new StandardMaterial('panda',newScene)
-const seal = new StandardMaterial('seal',newScene)
-tiger.backFaceCulling =false;
-panda.backFaceCulling =false;
-seal.backFaceCulling =false;
-tiger.lightmapTexture = tigerSkin
-panda.lightmapTexture = pandaSkin
-seal.lightmapTexture = baseSkin
-const materialArray = [seal, panda, tiger];
-
+  const tiger = new StandardMaterial('tiger', newScene);
+  const panda = new StandardMaterial('panda', newScene);
+  const seal = new StandardMaterial('seal', newScene);
+  tiger.backFaceCulling = false;
+  panda.backFaceCulling = false;
+  seal.backFaceCulling = false;
+  tiger.lightmapTexture = tigerSkin;
+  panda.lightmapTexture = pandaSkin;
+  seal.lightmapTexture = baseSkin;
+  const materialArray = [seal, panda, tiger];
 
   // This creates and positions a free camera (non-mesh)
   const camera = new BABYLON.ArcRotateCamera(
@@ -91,39 +89,43 @@ const materialArray = [seal, panda, tiger];
   sealMesh.parent = null;
   sealMesh.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
   // set skin to current skin
-  sealMesh.material = materialArray[materialArray.findIndex((material)=>material.name===currentTexture)] 
-  console.log('seal 1',sealMesh);
-
+  sealMesh.material =
+    materialArray[materialArray.findIndex((material) => material.name === currentTexture)];
+  console.log('seal 1', sealMesh);
 
   const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('GUI', true, newScene);
   const loadedGui = advancedTexture.parseSerializedObject(guiButtonsStore, true);
   advancedTexture.addControl(loadedGui);
-  
-  // next skin 
+
+  // next skin
   console.log('descendant', advancedTexture.getDescendants());
   const nextSkin = advancedTexture.getControlByName('nextSkin');
-  nextSkin.onPointerClickObservable.add(()=>{
-      console.log('nextSkin');
-      console.log('currentTexture', currentTexture);
-      const currentTextureIndex = materialArray.findIndex((material)=>material.name===currentTexture);
-      console.log('currentTextureIndex', currentTextureIndex);
-      const nextTextureIndex = (currentTextureIndex + 1) % materialArray.length;
-      console.log('nextTextureIndex', nextTextureIndex);
-      sealMesh.material = materialArray[nextTextureIndex];
-      currentTexture = sealMesh.material.name;
-    }
-  );
+  nextSkin.onPointerClickObservable.add(() => {
+    console.log('nextSkin');
+    console.log('currentTexture', currentTexture);
+    const currentTextureIndex = materialArray.findIndex(
+      (material) => material.name === currentTexture,
+    );
+    console.log('currentTextureIndex', currentTextureIndex);
+    const nextTextureIndex = (currentTextureIndex + 1) % materialArray.length;
+    console.log('nextTextureIndex', nextTextureIndex);
+    sealMesh.material = materialArray[nextTextureIndex];
+    currentTexture = sealMesh.material.name;
+  });
 
   // previous skin
   const previousSkin = advancedTexture.getControlByName('previousSkin');
   previousSkin.onPointerClickObservable.add(() => {
-      console.log('previousSkin');
-      const currentTextureIndex = materialArray.findIndex((material)=>material.name===currentTexture);
-      console.log('currentTextureIndex', currentTextureIndex);
-      const previousTextureIndex =(currentTextureIndex - 1 < 0 ? materialArray.length-1 : currentTextureIndex-1);
-      console.log('prevTextureIndex', previousTextureIndex);
-      sealMesh.material = materialArray[previousTextureIndex];
-      currentTexture = sealMesh.material.name;
+    console.log('previousSkin');
+    const currentTextureIndex = materialArray.findIndex(
+      (material) => material.name === currentTexture,
+    );
+    console.log('currentTextureIndex', currentTextureIndex);
+    const previousTextureIndex =
+      currentTextureIndex - 1 < 0 ? materialArray.length - 1 : currentTextureIndex - 1;
+    console.log('prevTextureIndex', previousTextureIndex);
+    sealMesh.material = materialArray[previousTextureIndex];
+    currentTexture = sealMesh.material.name;
   });
 
   // buttons images
@@ -145,7 +147,6 @@ const materialArray = [seal, panda, tiger];
   return newScene;
 };
 
-
 async function getSkins() {
   const response = await fetch('/api/skins');
   if (!response.ok) throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
@@ -155,22 +156,17 @@ async function getSkins() {
 }
 
 // const options = {
-  //   method: 'POST',
-  //   body: JSON.stringify({
-    //     username,
-    //     password,
-  //   }),
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  // };
-
-
-
-
+//   method: 'POST',
+//   body: JSON.stringify({
+//     username,
+//     password,
+//   }),
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// };
 
 const StorePage = async () => {
-
   const scene = await createScene();
   const engine = scene.getEngine();
 
