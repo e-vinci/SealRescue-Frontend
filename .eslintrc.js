@@ -11,10 +11,5 @@ module.exports = {
   rules: {
     'linebreak-style': 0,
     'no-use-before-define': ['error', 'nofunc'],
-    'no-console': 'off',
-    'no-plusplus': 'off',
-    'no-param-reassign': 'off',
-    'no-underscore-dangle' :'off',
-    'no-unused-vars' :'off'
   },
 };
