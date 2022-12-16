@@ -20,14 +20,14 @@ import pandaImport from '../../assets/texture/Seal_ColorMap_Panda.png';
 import tigerImport from '../../assets/texture/Seal_ColorMap_Tiger.png';
 import baseImport from '../../assets/texture/Seal_ColorMap_Base.png';
 import guiButtonsStore from '../../assets/guiStoreButtons.json';
-import moneyBag from '../../assets/img/moneybagstore.png'
+import moneyBag from '../../assets/img/moneybagstore.png';
 
 // get current user
 const currentUser = getCurrentUser();
 
 // get current skin from the connected user
 const currentSkinFromCurrentUser = getCurrentSkinNameFromCurrentUser();
-console.log('CURRENT SKIN',currentSkinFromCurrentUser);
+console.log('CURRENT SKIN', currentSkinFromCurrentUser);
 let currentTexture = currentSkinFromCurrentUser.name;
 
 // get all the skins from the connected user
@@ -55,12 +55,12 @@ const createScene = async () => {
   const engine = new BABYLON.Engine(newCanvas, true);
   const newScene = new BABYLON.Scene(engine);
 
-const tigerSkin = new Texture(tigerImport,newScene)
-const pandaSkin = new Texture(pandaImport,newScene)
-const baseSkin = new Texture(baseImport,newScene)
-tigerSkin.uAng= Math.PI
-pandaSkin.uAng= Math.PI
-baseSkin.uAng= Math.PI
+  const tigerSkin = new Texture(tigerImport, newScene);
+  const pandaSkin = new Texture(pandaImport, newScene);
+  const baseSkin = new Texture(baseImport, newScene);
+  tigerSkin.uAng = Math.PI;
+  pandaSkin.uAng = Math.PI;
+  baseSkin.uAng = Math.PI;
 
   const tiger = new StandardMaterial('tiger', newScene);
   const panda = new StandardMaterial('panda', newScene);
@@ -101,8 +101,8 @@ baseSkin.uAng= Math.PI
   sealMesh.parent = null;
   sealMesh.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
   // set skin to current skin
-  sealMesh.material = materialArray[materialArray.findIndex((material)=>material.name===currentTexture)]
-
+  sealMesh.material =
+    materialArray[materialArray.findIndex((material) => material.name === currentTexture)];
 
   const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('GUI', true, newScene);
   const loadedGui = advancedTexture.parseSerializedObject(guiButtonsStore, true);
@@ -118,25 +118,29 @@ baseSkin.uAng= Math.PI
   // next skin
   console.log('descendant', advancedTexture.getDescendants());
   const nextSkin = advancedTexture.getControlByName('nextSkin');
-  nextSkin.onPointerClickObservable.add(()=>{
-      const currentTextureIndex = materialArray.findIndex((material)=>material.name===currentTexture);
-      const nextTextureIndex = (currentTextureIndex + 1) % materialArray.length;
+  nextSkin.onPointerClickObservable.add(() => {
+    const currentTextureIndex = materialArray.findIndex(
+      (material) => material.name === currentTexture,
+    );
+    const nextTextureIndex = (currentTextureIndex + 1) % materialArray.length;
 
-      sealMesh.material = materialArray[nextTextureIndex];
-      currentTexture = sealMesh.material.name;
-      buyBtn.children[1].text = '1000'; // replace with skin price (or 'Owned' if user got the skin)
-    }
-  );
+    sealMesh.material = materialArray[nextTextureIndex];
+    currentTexture = sealMesh.material.name;
+    buyBtn.children[1].text = '1000'; // replace with skin price (or 'Owned' if user got the skin)
+  });
 
   // previous skin
   const previousSkin = advancedTexture.getControlByName('previousSkin');
   previousSkin.onPointerClickObservable.add(() => {
-      const currentTextureIndex = materialArray.findIndex((material)=>material.name===currentTexture);
+    const currentTextureIndex = materialArray.findIndex(
+      (material) => material.name === currentTexture,
+    );
 
-      const previousTextureIndex = (currentTextureIndex - 1 < 0 ? materialArray.length-1 : currentTextureIndex-1);
+    const previousTextureIndex =
+      currentTextureIndex - 1 < 0 ? materialArray.length - 1 : currentTextureIndex - 1;
 
-      sealMesh.material = materialArray[previousTextureIndex];
-      currentTexture = sealMesh.material.name;
+    sealMesh.material = materialArray[previousTextureIndex];
+    currentTexture = sealMesh.material.name;
   });
 
   // buttons images
@@ -159,17 +163,20 @@ baseSkin.uAng= Math.PI
 };
 
 // get connected user
-async function getCurrentUser(){
-const responseUser = await fetch('/api/users/user?username=user2');
-const user = await responseUser.json();
-// const currentUser = getAuthenticatedUser();
+async function getCurrentUser() {
+  const responseUser = await fetch(`${process.env.API_BASE_URL}/users/user?username=user2`);
+  const user = await responseUser.json();
+  // const currentUser = getAuthenticatedUser();
 
-return user;
+  return user;
 }
 
-async function getCurrentSkinNameFromCurrentUser(){
-  const responseSkin = fetch(`/api/skins/skinId?id=${currentUser.currentSkin}`);
-  if (!responseSkin.ok) throw new Error(`fetch error : ${responseSkin.status} : ${responseSkin.statusText}`);
+async function getCurrentSkinNameFromCurrentUser() {
+  const responseSkin = fetch(
+    `${process.env.API_BASE_URL}/skins/skinId?id=${currentUser.currentSkin}`,
+  );
+  if (!responseSkin.ok)
+    throw new Error(`fetch error : ${responseSkin.status} : ${responseSkin.statusText}`);
   const skins = responseSkin.json();
 
   return skins;
@@ -218,8 +225,6 @@ async function buySkin(skinName){
 
 }
 */
-
-
 
 const StorePage = async () => {
   const scene = await createScene();

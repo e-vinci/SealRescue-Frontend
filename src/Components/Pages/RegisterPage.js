@@ -87,12 +87,19 @@ async function onRegister(e) {
       username,
       password,
     }),
+    // mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
+      // 'Access-Control-Allow-Origin': '*',
+      // 'Access-Control-Allow-Methods': 'POST',
+      // 'Access-Control-Allow-Headers': ['Content-Type, Authorization'],
     },
   };
 
-  const response = await fetch('/api/auths/register', options);
+  console.log(JSON.stringify(options));
+
+  const response = await fetch(`${process.env.API_BASE_URL}/auths/register`, options);
+  console.log('response : ', response);
 
   if (!response.ok) throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
 

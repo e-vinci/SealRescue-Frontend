@@ -1,4 +1,4 @@
-import { setAuthenticatedUser,isAuthenticated } from '../../utils/auths';
+import { setAuthenticatedUser, isAuthenticated } from '../../utils/auths';
 import { clearPage, renderPageTitle } from '../../utils/render';
 import Footer from '../Footer/Footer';
 import Navbar from '../Navbar/Navbar';
@@ -12,13 +12,13 @@ const LoginPage = () => {
   clearPage();
   const main = document.querySelector('main');
 
-  if(isAuthenticated()){
+  if (isAuthenticated()) {
     console.log('access denied');
-    main.innerHTML+='<div class="max-h-screen max-w-screen"> You are already login </div>'
+    main.innerHTML += '<div class="max-h-screen max-w-screen"> You are already login </div>';
     return;
   }
 
-  renderPageTitle("Login");
+  renderPageTitle('Login');
 
   main.innerHTML += renderLoginForm();
 
@@ -103,7 +103,6 @@ function renderLoginForm() {
 }
 
 async function onLogin(e) {
-
   e.preventDefault();
 
   const username = document.querySelector('#username').value;
@@ -120,10 +119,10 @@ async function onLogin(e) {
     },
   };
 
-  const response = await fetch('/api/auths/login', options);
+  const response = await fetch(`${process.env.API_BASE_URL}/auths/login`, options);
   console.log(response);
 
-  if(response.status === 400 ){
+  if (response.status === 400) {
     console.log('error 400');
     const form = document.querySelector('form');
     const errorMessage400 = `
@@ -135,7 +134,7 @@ async function onLogin(e) {
     LoginPage();
   }
 
-  if(response.status === 401 ){
+  if (response.status === 401) {
     console.log('error 401');
     const form = document.querySelector('form');
     const errorMessage401 = document.createElement('div');
@@ -157,7 +156,7 @@ async function onLogin(e) {
   Navigate('/');
 }
 
-function redirectToRegisterPage(){
+function redirectToRegisterPage() {
   Navigate('/register');
 }
 
