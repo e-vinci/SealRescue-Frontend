@@ -20,8 +20,21 @@ import pandaImport from '../../assets/texture/Seal_ColorMap_Panda.png';
 import tigerImport from '../../assets/texture/Seal_ColorMap_Tiger.png';
 import baseImport from '../../assets/texture/Seal_ColorMap_Base.png';
 import guiButtonsStore from '../../assets/guiStoreButtons.json';
+import moneyBag from '../../assets/img/moneybagstore.png'
 
-// TODO get current user texture
+// get current user
+const currentUser = getCurrentUser();
+
+// get current skin from the connected user
+const currentSkinFromCurrentUser = getCurrentSkinNameFromCurrentUser();
+console.log('CURRENT SKIN',currentSkinFromCurrentUser);
+let currentTexture = currentSkinFromCurrentUser.name;
+
+// get all the skins from the connected user
+const skinsOwnedByUser = currentUser.skins;
+
+// get connected user's balance
+const userBalance = currentUser.balance;
 
 const createScene = async () => {
   const game = document.getElementById('game');
@@ -42,13 +55,12 @@ const createScene = async () => {
   const engine = new BABYLON.Engine(newCanvas, true);
   const newScene = new BABYLON.Scene(engine);
 
-  let currentTexture = 'seal';
-  const tigerSkin = new Texture(tigerImport, newScene);
-  const pandaSkin = new Texture(pandaImport, newScene);
-  const baseSkin = new Texture(baseImport, newScene);
-  tigerSkin.uAng = Math.PI;
-  pandaSkin.uAng = Math.PI;
-  baseSkin.uAng = Math.PI;
+const tigerSkin = new Texture(tigerImport,newScene)
+const pandaSkin = new Texture(pandaImport,newScene)
+const baseSkin = new Texture(baseImport,newScene)
+tigerSkin.uAng= Math.PI
+pandaSkin.uAng= Math.PI
+baseSkin.uAng= Math.PI
 
   const tiger = new StandardMaterial('tiger', newScene);
   const panda = new StandardMaterial('panda', newScene);
@@ -89,43 +101,42 @@ const createScene = async () => {
   sealMesh.parent = null;
   sealMesh.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
   // set skin to current skin
-  sealMesh.material =
-    materialArray[materialArray.findIndex((material) => material.name === currentTexture)];
-  console.log('seal 1', sealMesh);
+  sealMesh.material = materialArray[materialArray.findIndex((material)=>material.name===currentTexture)]
+
 
   const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('GUI', true, newScene);
   const loadedGui = advancedTexture.parseSerializedObject(guiButtonsStore, true);
   advancedTexture.addControl(loadedGui);
 
+  // buy button
+  const buyBtn = advancedTexture.getControlByName('buyButton');
+  buyBtn.children[0].source = moneyBag;
+  buyBtn.onPointerClickObservable.add(() => {
+    // todo user transaction to buy skin
+  });
+
   // next skin
   console.log('descendant', advancedTexture.getDescendants());
   const nextSkin = advancedTexture.getControlByName('nextSkin');
-  nextSkin.onPointerClickObservable.add(() => {
-    console.log('nextSkin');
-    console.log('currentTexture', currentTexture);
-    const currentTextureIndex = materialArray.findIndex(
-      (material) => material.name === currentTexture,
-    );
-    console.log('currentTextureIndex', currentTextureIndex);
-    const nextTextureIndex = (currentTextureIndex + 1) % materialArray.length;
-    console.log('nextTextureIndex', nextTextureIndex);
-    sealMesh.material = materialArray[nextTextureIndex];
-    currentTexture = sealMesh.material.name;
-  });
+  nextSkin.onPointerClickObservable.add(()=>{
+      const currentTextureIndex = materialArray.findIndex((material)=>material.name===currentTexture);
+      const nextTextureIndex = (currentTextureIndex + 1) % materialArray.length;
+
+      sealMesh.material = materialArray[nextTextureIndex];
+      currentTexture = sealMesh.material.name;
+      buyBtn.children[1].text = '1000'; // replace with skin price (or 'Owned' if user got the skin)
+    }
+  );
 
   // previous skin
   const previousSkin = advancedTexture.getControlByName('previousSkin');
   previousSkin.onPointerClickObservable.add(() => {
-    console.log('previousSkin');
-    const currentTextureIndex = materialArray.findIndex(
-      (material) => material.name === currentTexture,
-    );
-    console.log('currentTextureIndex', currentTextureIndex);
-    const previousTextureIndex =
-      currentTextureIndex - 1 < 0 ? materialArray.length - 1 : currentTextureIndex - 1;
-    console.log('prevTextureIndex', previousTextureIndex);
-    sealMesh.material = materialArray[previousTextureIndex];
-    currentTexture = sealMesh.material.name;
+      const currentTextureIndex = materialArray.findIndex((material)=>material.name===currentTexture);
+
+      const previousTextureIndex = (currentTextureIndex - 1 < 0 ? materialArray.length-1 : currentTextureIndex-1);
+
+      sealMesh.material = materialArray[previousTextureIndex];
+      currentTexture = sealMesh.material.name;
   });
 
   // buttons images
@@ -147,6 +158,24 @@ const createScene = async () => {
   return newScene;
 };
 
+// get connected user
+async function getCurrentUser(){
+const responseUser = await fetch('/api/users/user?username=user2');
+const user = await responseUser.json();
+// const currentUser = getAuthenticatedUser();
+
+return user;
+}
+
+async function getCurrentSkinNameFromCurrentUser(){
+  const responseSkin = fetch(`/api/skins/skinId?id=${currentUser.currentSkin}`);
+  if (!responseSkin.ok) throw new Error(`fetch error : ${responseSkin.status} : ${responseSkin.statusText}`);
+  const skins = responseSkin.json();
+
+  return skins;
+}
+
+/*
 async function getSkins() {
   const response = await fetch('/api/skins');
   if (!response.ok) throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
@@ -156,15 +185,41 @@ async function getSkins() {
 }
 
 // const options = {
-//   method: 'POST',
-//   body: JSON.stringify({
-//     username,
-//     password,
-//   }),
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// };
+  //   method: 'POST',
+  //   body: JSON.stringify({
+    //     username,
+    //     password,
+  //   }),
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // };
+
+
+
+async function buySkin(skinName){
+  const responseSkinToBuy = await fetch(`/api/skins/skinName?name=${skinName}`);
+  if (!responseSkinToBuy.ok) throw new Error(`fetch error : ${responseSkinToBuy.status} : ${responseSkinToBuy.statusText}`);
+
+  const skinToBuy = await responseSkin.json();
+
+  const options = {
+    method: 'PATCH',
+    body: JSON.stringify({
+      id: skinToBuy.id
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const responseAddingSkinToUser = await fetch(`/api/users/skins?username=${currentUser}`, options);
+  if (!responseAddingSkinToUser.ok) throw new Error(`fetch error : ${responseAddingSkinToUser.status} : ${responseAddingSkinToUser.statusText}`);
+
+}
+*/
+
+
 
 const StorePage = async () => {
   const scene = await createScene();
