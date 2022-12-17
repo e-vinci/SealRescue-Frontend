@@ -1,7 +1,6 @@
 import { setAuthenticatedUser, isAuthenticated } from '../../utils/auths';
 import { clearPage, renderPageTitle, renderHomeButton } from '../../utils/render';
 import Footer from '../Footer/Footer';
-import Navbar from '../Navbar/Navbar';
 import Navigate from '../Router/Navigate';
 import rope01 from '../../assets/img/rope_01.png';
 import rope02 from '../../assets/img/rope_02.png';
@@ -22,29 +21,25 @@ const LoginPage = () => {
   }
 
   // adding home button and register form to main
+  renderPageTitle('Login');
   main.innerHTML += renderHomeButton();
   main.innerHTML += renderLoginForm();
-
-  // get form and add listener
-  const form = document.querySelector('form');
-  form.addEventListener('submit', onLogin);
-
-  // get register button and add listener
-  const registerButton = document.querySelector('#register-redirection');
-  registerButton.addEventListener('click', redirectToRegisterPage);
-
-  // get home button and adding listener
-  const homeButton = document.querySelector('#home-button');
-  homeButton.addEventListener('click', redirectToHomePage);
-
-  renderPageTitle('Login');
   Footer();
+
+  // get buttons and add listeners
+  const form = document.querySelector('form');
+  const registerButton = document.querySelector('#register-redirection');
+  const homeButton = document.querySelector('#home-button');
+
+  form.addEventListener('submit', onLogin);
+  registerButton.addEventListener('click', redirectToRegisterPage);
+  homeButton.addEventListener('click', redirectToHomePage);
 };
 
 function renderLoginForm() {
   const form = `
     <div class="pb-10 inline-block min-w-full sm:px-6 lg:px-60">
-      <form>
+      <form action="${process.env.API_BASE_URL}/auths/login" method="post">
         <div class="px-10 pt-6 pb-8 mb-4 flex flex-row relative bg-custom-blue rounded-3xl">
           <div class="absolute left-0 top-0 px-0 py-0 flex flex-row">
             <div class="h-20 w-28">
@@ -58,13 +53,14 @@ function renderLoginForm() {
             <div class="bg-wood-board-01 bg-cover bg-center block mt-0">
               <label class="text-white text-center text-xl font-mono p-10" for="username">username :</label>
             </div>
-            <input  id="username" class="bg-custom-lightyellow shadow appearance-none rounded" name="username" type="text">
+            <input id="username" required class="bg-custom-lightyellow shadow appearance-none rounded" name="username" type="text">
             <div class="bg-wood-board-01 bg-cover bg-center block mt-10">
               <label class="text-white text-center text-xl font-mono p-10" for="password">password :</label>
             </div>
-            <input  id="password" class="bg-custom-lightyellow shadow appearance-none rounded" name="password" type="password">
+            <input id="password" class="bg-custom-lightyellow shadow appearance-none rounded" name="password" type="password">
           </div>
         </div>
+      
 
         <div class="flex flex-row justify-around overflow-visible mt-100">
           <div class="relative flex flex-col justify-between">
@@ -72,21 +68,19 @@ function renderLoginForm() {
               <img src="${rope02}" class="object-scale-down">
             </div>
             <div class="bg-wood-board-02 bg-cover bg-center block w-full p-10">
-              <input class="hover:text-custom-blue text-white text-xl font-mono" type="submit" value="login">
+            <input class="hover:text-custom-blue text-white text-xl font-mono" type="submit" value="login">
             </div>
           </div>
+        </form>
           <div class="relative flex flex-col justify-between">
               <div class="absolute h-1 w-10 left-10 -z-10 -top-8">
                 <img src="${rope02}" class="object-scale-down">
               </div>
             <div class="bg-wood-board-02 bg-cover bg-center block w-full h-full p-10">
-              <button id="register-redirection" class="hover:text-custom-blue text-white text-xl font-mono">
-              register
-              </button>
+              <div id="register-redirection" class="hover:text-custom-blue text-white text-xl font-mono">register</div>
             </div>
           </div>
         </div>
-      </form>
     </div>
 
     <div class="absolute -z-10 right-0 top-10 rotate-180">
@@ -100,9 +94,7 @@ function renderLoginForm() {
         <img src="${rope02}" class="object-scale-down">
       </div>
     </div>
-
     `;
-
   return form;
 }
 
@@ -126,7 +118,6 @@ async function onLogin(e) {
   };
 
   const response = await fetch(`${process.env.API_BASE_URL}/auths/login`, options);
-  console.log(response);
 
   // send error message if the information to login are incorect
   if (response.status === 401) {

@@ -1,4 +1,5 @@
 import helm from '../assets/img/helm.png';
+import backButton from '../assets/img/backButton.png';
 
 const clearPage = () => {
   const canva = document.getElementById('renderCanvas');
@@ -11,8 +12,8 @@ const renderPageTitle = (title) => {
   if (!title) return;
   const main = document.querySelector('main');
   const pageTitle = `
-  <div class="relative bg-wood-board-04 bg-cover bg-left w-1/4 p-3 mt-10">
-    <div class="absolute -z-10 -left-10 -top-10">
+  <div class="relative bg-wood-board-04 bg-cover bg-left w-1/4 p-3 mt-14">
+    <div class="absolute -z-10 -left-16 -top-12">
         <div class="h-48 w-48">
           <img src="${helm}" class="object-scale-down">
         </div>
@@ -31,7 +32,7 @@ const renderMenuTitle = (title) => {
   if (!title) return;
   const main = document.querySelector('main');
   const pageTitle = `
-  <div class="relative bg-custom-blue w-1/2 rounded-3xl h-20 mt-10">
+  <div class="relative bg-custom-blue w-1/2 rounded-3xl h-20 mt-10 grid content-center">
     <div class="absolute -z-10 left-0 top-0">
         <div class="h-48 w-48">
           <img src="${helm}" class="object-scale-down">
@@ -49,8 +50,13 @@ const renderMenuTitle = (title) => {
 
 function renderHomeButton() {
   const button = `
-  <button id="home-button" class="absolute bg-seal bg-cover bg-left right-0 top-0 h-20 w-20">
+  <div class="block">
+    <div class="absolute top-0 right-0 p-2 bg-custom-yellow inline-flex rounded-full mt-3 mr-3">
+  <button id="home-button" class="h-auto w-auto">
+    <img src="${backButton}" class="object-scale-down h-10 w-10">
   </button>
+  </div>
+  </div>
   `;
   return button;
 }

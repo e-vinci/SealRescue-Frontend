@@ -69,19 +69,23 @@ import loadSealURL from '../../assets/img/seal load.json';
 import bottleImportUrl from '../../assets/3Dmodels/waterBottle.glb';
 import barelImportUrl from '../../assets/3Dmodels/metalBarel.glb';
 import iceImportUrl from '../../assets/3Dmodels/ice.glb';
+import fishIcon from '../../assets/img/poisson.png';
+import moneyJSON from '../../assets/img/moneyInGame.json';
 
 // eslint-disable-next-line camelcase
-import sky_px from '../../assets/img/Skybox/Daylight_Box_Pieces/Daylight_Box_px.bmp';
+import sky_px from '../../assets/img/Skybox/SkyboxCut/skybox_px.png';
 // eslint-disable-next-line camelcase
-import sky_py from '../../assets/img/Skybox/Daylight_Box_Pieces/Daylight_Box_py.bmp';
+import sky_py from '../../assets/img/Skybox/SkyboxCut/skybox_py.png';
 // eslint-disable-next-line camelcase
-import sky_pz from '../../assets/img/Skybox/Daylight_Box_Pieces/Daylight_Box_pz.bmp';
+import sky_pz from '../../assets/img/Skybox/SkyboxCut/skybox_pz.png';
 // eslint-disable-next-line camelcase
-import sky_nx from '../../assets/img/Skybox/Daylight_Box_Pieces/Daylight_Box_nx.bmp';
+import sky_nx from '../../assets/img/Skybox/SkyboxCut/skybox_nx.png';
 // eslint-disable-next-line camelcase
-import sky_ny from '../../assets/img/Skybox/Daylight_Box_Pieces/Daylight_Box_ny.bmp';
+import sky_ny from '../../assets/img/Skybox/SkyboxCut/skybox_ny.png';
 // eslint-disable-next-line camelcase
-import sky_nz from '../../assets/img/Skybox/Daylight_Box_Pieces/Daylight_Box_nz.bmp';
+import sky_nz from '../../assets/img/Skybox/SkyboxCut/skybox_nz.png';
+
+import s from '../../assets/store.json'
 
 let startGame;
 
@@ -90,38 +94,12 @@ const createScene = async (scene) => {
   // Game Assets
   const waterMeshImport = await SceneLoader.ImportMeshAsync(null, water);
   console.log('waterMeshImport', waterMeshImport);
-  // waterMeshImport.meshes[2].dispose();
+
   const waterMesh = waterMeshImport.meshes[1];
   waterMesh.scaling = new Vector3(3, 3, 1.2);
 
-  // waterMeshImport.dispose()
-
   console.log('here', waterMesh);
-  // waterMesh.position = new BABYLON.Vector3(0, 0, 0);
-  // waterMesh.rotate(Axis.Y, -Math.PI / 2, Space.WORLD);
-  // waterMesh.isVisible = true;
-  // waterMesh.isPickable = true;
-  // waterMesh.checkCollisions = true;
-  // waterMesh.receiveShadows = true;
-  // waterMesh.name = 'water';
-  // waterMesh.material = new BABYLON.StandardMaterial('water', scene);
-  // waterMesh.material.diffuseColor = new BABYLON.Color3(0, 0, 1);
-  // waterMesh.material.specularColor = new BABYLON.Color3(0, 0, 1);
-  // waterMesh.material.emissiveColor = new BABYLON.Color3(0, 0, 1);
-  // waterMesh.material.ambientColor = new BABYLON.Color3(0, 0, 1);
-  // waterMesh.material.alpha = 0.3;
-  // waterMesh.material.backFaceCulling = false;
-  // waterMesh.material.freeze();
-  // waterMesh.freezeWorldMatrix();
-  // waterMesh.freezeNormals();
-  // waterMesh.freeze();
-  // waterMesh.isPickable = true;
-  // const direction=waterMesh.getDirection()
-  // console.log("direction",direction);
 
-  // const waterMaterial = NodeMaterial.Parse(vague,scene);
-  // console.log("waterMaterial",waterMaterial);
-  // waterMesh.material=waterMaterial;
   const sealMeshImport = await SceneLoader.ImportMeshAsync(null, seal);
   const sealMesh = sealMeshImport.meshes[1];
   sealMesh.scaling = new Vector3(0.5, 0.5, 0.5);
@@ -166,29 +144,6 @@ const createScene = async (scene) => {
   ice.scaling = new Vector3(2, 2, 1.8);
   ice.parent = null;
   ice.position.y = 100;
-  // ice.isVisible = false;
-  // scene.beginAnimation(sealMesh.skeleton, 0, 100, true, 1.0);
-  // sealMesh.rotate(BABYLON.Axis.Y, -Math.PI/2, BABYLON.Space.WORLD);
-  // sealMesh.position = new BABYLON.Vector3(0, 0, 0);
-  // sealMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-  // sealMesh.rotation = new BABYLON.Vector3(0, 0, 0);
-  // sealMesh.isVisible = true;
-  // sealMesh.isPickable = true;
-  // sealMesh.checkCollisions = true;
-  // sealMesh.receiveShadows = true;
-  // sealMesh.name = 'seal';
-  // sealMesh.material = new BABYLON.StandardMaterial('seal', scene);
-  // sealMesh.material.diffuseColor = new BABYLON.Color3(0, 0, 1);
-  // sealMesh.material.specularColor = new BABYLON.Color3(0, 0, 1);
-  // sealMesh.material.emissiveColor = new BABYLON.Color3(0, 0, 1);
-  // sealMesh.material.ambientColor = new BABYLON.Color3(0, 0, 1);
-  // sealMesh.material.alpha = 0.5;
-  // sealMesh.material.backFaceCulling = false;
-  // sealMesh.material.freeze();
-  // sealMesh.freezeWorldMatrix();
-  // sealMesh.freezeNormals();
-  // sealMesh.freeze();
-  // sealMesh.isPickable = true;
 
   // Game Variables
   const numberCols = 3;
@@ -212,21 +167,20 @@ const createScene = async (scene) => {
   UiPanel.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
   advancedTexture.addControl(UiPanel);
 
-  // button
-  const buttonScore = GUI.Button.CreateSimpleButton('scoreButton');
-  buttonScore.textBlock.text = `Score : ${score}`;
-  buttonScore.paddingTop = '10px';
-  buttonScore.width = '100px';
-  buttonScore.height = '50px';
-  buttonScore.color = 'white';
-  buttonScore.background = 'grey';
-  UiPanel.addControl(buttonScore);
+  // money + icon + score
+  const moneyTexture = advancedTexture.parseSerializedObject(moneyJSON, true);
+  UiPanel.addControl(moneyTexture);
+  const fishImg = advancedTexture.getControlByName('fish');
+  fishImg.source = fishIcon;
 
+  const buttonScore = advancedTexture.getControlByName('score');
+  const moneyCount = advancedTexture.getControlByName('money');
+  
   // Camera
   // eslint-disable-next-line no-unused-vars
   const camera = new ArcRotateCamera(
     'Camera',
-    -Math.PI / 2,
+    (3 * -Math.PI) / 5,
     (2 * Math.PI) / 5,
     cameraOffset,
     new Vector3(0, 0, 0),
@@ -402,6 +356,7 @@ const createScene = async (scene) => {
           },
           () => {
             moneyCollected++;
+            moneyCount.text = `${moneyCollected}`;
             target.dispose();
           },
         ),
@@ -421,8 +376,8 @@ const createScene = async (scene) => {
 
       // adjust target parameters
       // let x = new Scene();
-
       target.position = startPosition;
+      target.position.y = target.absoluteScaling.y / 2;
       target.visibility = true;
       // add to targets
       obstacleTargets.push(target);
@@ -494,7 +449,7 @@ const createScene = async (scene) => {
           },
           () => {
             score++;
-            buttonScore.textBlock.text = `Score : ${score}`;
+            buttonScore.text = `Score : ${score}`;
           },
         ),
       );
@@ -544,6 +499,7 @@ const createScene = async (scene) => {
                 case 'd':
                 case 'D':
                 case 'ArrowRight':
+                  kbInfo.event.preventDefault();
                   if (sealMesh.position.x !== widthCols) {
                     isMoving = true;
                     Animation.CreateAndStartAnimation(
@@ -563,6 +519,7 @@ const createScene = async (scene) => {
                 case 'q':
                 case 'Q':
                 case 'ArrowLeft':
+                  kbInfo.event.preventDefault();
                   if (sealMesh.position.x !== -widthCols) {
                     isMoving = true;
                     Animation.CreateAndStartAnimation(
@@ -582,6 +539,7 @@ const createScene = async (scene) => {
                 case 's':
                 case 'S':
                 case 'ArrowDown':
+                  kbInfo.event.preventDefault();
                   if (sealMesh.position.y < maxJumpHeight) {
                     waterParticles.stop();
                     isMoving = true;
@@ -608,11 +566,10 @@ const createScene = async (scene) => {
 
 const GamePage = async () => {
   clearPage();
-  const game = document.getElementById('game');
-  const newCanvas = document.createElement('canvas');
-  newCanvas.id = 'renderCanvas';
-  game.appendChild(newCanvas);
-  const canvas = document.getElementById('renderCanvas');
+  const game = document.querySelector('main');
+  const canvas = document.createElement('canvas');
+  canvas.id = 'renderCanvas';
+  game.appendChild(canvas);
   let engine = new Engine(canvas, true, null, true);
   let scene = new Scene(engine);
   scene.detachControl();
@@ -624,17 +581,15 @@ const GamePage = async () => {
     255,
   )},${tools.getRandomIntBetween(0, 255)})`;
   const loadingScreen = new CustomLoadingScreen(loadingCanvas, text, bgColor);
-  // const loadingScreen = new DefaultLoadingScreen(loadingCanvas, 'Loading...', bgColor);
-  scene.detachControl();
   // TODO chercher info sur ca ...bon pour perf?
-  // scene.useDelayedTextureLoading = true;
+  scene.useDelayedTextureLoading = true;
   loadingScreen.displayLoadingUI();
   scene = await createScene(scene);
   SceneOptimizer.OptimizeAsync(scene, SceneOptimizerOptions.ModerateDegradationAllowed());
-
   scene.executeWhenReady(() => {
     loadingScreen.hideLoadingUI();
     scene.attachControl();
+    canvas.focus();
     startGame();
   }, true);
 
@@ -714,7 +669,7 @@ async function getGameOverMenu(scene, score, user = undefined) {
         `${process.env.API_BASE_URL}/users/user?username=${getAuthenticatedUser().username}`,
       );
       if (!res.ok) throw new Error(`fetch error : ${res.status} : ${res.statusText}`);
-      const user = res.json();
+      const user = await res.json();
 
       user.then((a) => (highscoreData.text = a.highscore));
     } catch (err) {
